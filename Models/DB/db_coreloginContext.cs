@@ -91,7 +91,7 @@ namespace Project.Models.DB
                 SqlParameter passwordParam = new SqlParameter("@password", passwordVal ?? (object)DBNull.Value);
 
                 // Processing.  
-                string sqlQuery = "EXEC [dbo].[LoginByUsernamePassword] " +
+                string sqlQuery = "EXEC [dbo].[LoginByUsernamePassword]" +
                                     "@username, @password";
 
                 //List<LoginByUsernamePassword> subjectAreaList = DbModelBuilder.Database.SqlQuery<LoginByUsernamePassword> ("EXECUTE sp_GetSubjectAreasBySubstituteID @id", new SqlParameter("id", 1)).ToList();
@@ -102,8 +102,9 @@ namespace Project.Models.DB
                 using (var command = new SqlCommand(sqlQuery, conn) { CommandType = CommandType.StoredProcedure })
                 {
                     conn.Open();
-                    command.Parameters.AddWithValue(usernameVal,usernameParam);
-                    command.Parameters.AddWithValue(passwordVal,passwordParam);
+                    command.CommandType = CommandType.Text;
+                    command.Parameters.AddWithValue("@username", usernameParam.ToString());
+                    command.Parameters.AddWithValue("@password", passwordParam.ToString());
                     command.ExecuteNonQuery();
 
                     SqlDataAdapter da = new SqlDataAdapter(command);
@@ -113,8 +114,8 @@ namespace Project.Models.DB
                     {
                         LoginByUsernamePassword obj = new LoginByUsernamePassword();
 
-                        obj.Username = dr["Username"].ToString();
-                        obj.Password = dr["Password"].ToString();
+                        obj.Username = dr["username"].ToString();
+                        obj.Password = dr["password"].ToString();
 
                         lst.Add(obj);
                     }

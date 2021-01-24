@@ -11,6 +11,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
+using Project.Models.DB;
 
 namespace Project
 {
@@ -49,7 +51,9 @@ namespace Project
             });
 
             //  Register SQL database configuration context as services.    
-            ////services.AddDbContext<db_coreloginContext>(options => options.UseSqlServer(Configuration.GetConnectionString("db_corelogin")));
+           services.AddDbContext<db_coreloginContext>(options => options.UseSqlServer(Configuration.GetConnectionString("db_corelogin")));
+
+            
         }
 
         static void GetAppSettingsFile()
