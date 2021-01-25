@@ -103,8 +103,8 @@ namespace Project.Models.DB
                 {
                     conn.Open();
                     command.CommandType = CommandType.Text;
-                    command.Parameters.AddWithValue("@username", usernameParam.ToString());
-                    command.Parameters.AddWithValue("@password", passwordParam.ToString());
+                    command.Parameters.AddWithValue("@username", usernameParam.SqlValue);
+                    command.Parameters.AddWithValue("@password", passwordParam.SqlValue);
                     command.ExecuteNonQuery();
 
                     SqlDataAdapter da = new SqlDataAdapter(command);
