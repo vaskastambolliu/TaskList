@@ -139,11 +139,12 @@ namespace Project.Pages
             catch (Exception ex)
             {
                 // Info  
-                Console.Write(ex);
+                Console.Write(ex.Message);
             }
 
             // Info.  
-            return this.Page();
+            //return this.Page();
+            return this.RedirectToPage("/Home/Index");
         }
 
         #endregion

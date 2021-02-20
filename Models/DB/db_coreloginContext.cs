@@ -8,8 +8,6 @@ using System.Data.Common;
 using System.Data.Entity;
 using System.Data;
 
-#nullable disable
-
 namespace Project.Models.DB
 {
     public partial class db_coreloginContext : Microsoft.EntityFrameworkCore.DbContext
@@ -26,14 +24,6 @@ namespace Project.Models.DB
 
         public virtual System.Data.Entity.DbSet<Login> Login { get; set; }
 
-//        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-//        {
-//            if (!optionsBuilder.IsConfigured)
-//            {
-//#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
-//                optionsBuilder.UseSqlServer("Server=(localdb)\\MSSQLLocalDB;Database=db_corelogin;Trusted_Connection=True;user id=appuser;password=34g65c;Application Name=ClientCard;");
-//            }
-//        }
 
         protected  void OnModelCreating(DbModelBuilder modelBuilder)
         {
@@ -65,7 +55,7 @@ namespace Project.Models.DB
             modelBuilder.Entity<LoginByUsernamePassword>().MapToStoredProcedures();
         }
 
-        //partial void OnModelCreatingPartial(ModelBuilder modelBuilder);
+       
         #region Login by username and password store procedure method.  
 
         /// <summary>  
@@ -76,15 +66,13 @@ namespace Project.Models.DB
         /// <returns>Returns - List of logins by username and password</returns>  
         public async Task<List<LoginByUsernamePassword>> LoginByUsernamePasswordMethodAsync(string usernameVal, string passwordVal)
         {
-            // Initialization. 
-
-            var yourConnectionString = "Server=(localdb)\\MSSQLLocalDB;Database=db_corelogin;Trusted_Connection=True;user id=appuser;password=34g65c;";
+            // Initialization db connection. 
+            var yourConnectionString = @"Server=DESKTOP-FO7B6CB\SQLEXPRESS;Database=db_corelogin;Trusted_Connection=True;user id=;password=;";
 
             List<LoginByUsernamePassword> lst = new List<LoginByUsernamePassword>();
 
             try
             {   DataTable dt = new DataTable();
-                //List<LoginByUsernamePassword> lst = new List<LoginByUsernamePassword>();
 
                 // Settings.  
                 SqlParameter usernameParam = new SqlParameter("@username", usernameVal ?? (object)DBNull.Value);
@@ -93,8 +81,6 @@ namespace Project.Models.DB
                 // Processing.  
                 string sqlQuery = "EXEC [dbo].[LoginByUsernamePassword]" +
                                     "@username, @password";
-
-                //List<LoginByUsernamePassword> subjectAreaList = DbModelBuilder.Database.SqlQuery<LoginByUsernamePassword> ("EXECUTE sp_GetSubjectAreasBySubstituteID @id", new SqlParameter("id", 1)).ToList();
                 using (var conn = new SqlConnection(yourConnectionString))
 
                 
@@ -103,6 +89,7 @@ namespace Project.Models.DB
                 {
                     conn.Open();
                     command.CommandType = CommandType.Text;
+                    command.CommandTimeout = 5000;
                     command.Parameters.AddWithValue("@username", usernameParam.SqlValue);
                     command.Parameters.AddWithValue("@password", passwordParam.SqlValue);
                     command.ExecuteNonQuery();
@@ -110,23 +97,31 @@ namespace Project.Models.DB
                     SqlDataAdapter da = new SqlDataAdapter(command);
                     da.Fill(dt);
 
-                    foreach (DataRow dr in dt.Rows)
+                    if (dt.Rows.Count > 0)
                     {
-                        LoginByUsernamePassword obj = new LoginByUsernamePassword();
+                        foreach (DataRow dr in dt.Rows)
+                        {
+                            LoginByUsernamePassword obj = new LoginByUsernamePassword();
 
-                        obj.Username = dr["username"].ToString();
-                        obj.Password = dr["password"].ToString();
+                            obj.Username = dr["username"].ToString();
+                            obj.Password = dr["password"].ToString();
 
-                        lst.Add(obj);
+                            lst.Add(obj);
+                        }
+                    }
+
+                    else
+                    {
+                        Console.WriteLine("Not good connection with DB");
                     }
 
                     conn.Close();
                 }
-                //lst = await this.Query<LoginByUsernamePassword>().FromSql(sqlQuery, usernameParam, passwordParam).ToListAsync();
             }
             catch (Exception ex)
             {
                 throw ex;
+                Console.WriteLine(ex.Message);
             }
 
             // Info.  
