@@ -39,15 +39,16 @@ namespace Project
                 options.DefaultChallengeScheme = CookieAuthenticationDefaults.AuthenticationScheme;
             }).AddCookie(options =>
             {
-                options.LoginPath = new PathString("/Index");
+                options.LoginPath = new PathString("/");
                 options.ExpireTimeSpan = TimeSpan.FromMinutes(5.0);
             });
 
             //  Authorization settings.  
             services.AddMvc().AddRazorPagesOptions(options =>
             {
-                options.Conventions.AuthorizeFolder("/");
+                options.Conventions.AuthorizeFolder("/Home");
                 options.Conventions.AllowAnonymousToPage("/Index");
+                //options.Conventions.AllowAnonymousToPage("/AfterLogIn");
             });
 
             //  Register SQL database configuration context as services.    

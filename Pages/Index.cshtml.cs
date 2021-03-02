@@ -127,7 +127,8 @@ namespace Project.Pages
                         await this.SignInUser(logindetails.Username, false);
 
                         // Info.  
-                        return this.RedirectToPage("/Home/Index");
+                        //return this.RedirectToPage("/Home/Index");
+                        return new RedirectToPageResult("/AfterLogIn");
                     }
                     else
                     {

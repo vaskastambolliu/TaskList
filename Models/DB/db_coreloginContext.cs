@@ -67,7 +67,7 @@ namespace Project.Models.DB
         public async Task<List<LoginByUsernamePassword>> LoginByUsernamePasswordMethodAsync(string usernameVal, string passwordVal)
         {
             // Initialization db connection. 
-            var yourConnectionString = @"Server=DESKTOP-FO7B6CB\SQLEXPRESS;Database=db_corelogin;Trusted_Connection=True;user id=;password=;";
+            var yourConnectionString = @"Server=DESKTOP-FO7B6CB\SQLEXPRESS;Database=db_corelogin;Trusted_Connection=True;user id=appuser;password=34g65c;";
 
             List<LoginByUsernamePassword> lst = new List<LoginByUsernamePassword>();
 
