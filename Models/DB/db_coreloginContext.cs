@@ -112,7 +112,8 @@ namespace Project.Models.DB
 
                     else
                     {
-                        Console.WriteLine("Not good connection with DB");
+                        throw new Exception("Wrong name or password"); 
+                        //Console.WriteLine("Not good connection with DB");
                     }
 
                     conn.Close();
