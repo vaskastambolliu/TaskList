@@ -23,36 +23,15 @@ namespace Project.Models.DB
         }
 
         public virtual System.Data.Entity.DbSet<Login> Login { get; set; }
+        //public virtual System.Data.Entity.DbSet<ToDoTask> ToDoTask { get; set; }
+        public System.Data.Entity.DbSet<ToDoTask> ToDoTask { get; set; }
 
 
         protected  void OnModelCreating(DbModelBuilder modelBuilder)
         {
-            //modelBuilder.HasAnnotation("Relational:Collation", "SQL_Latin1_General_CP1_CI_AS");
-
-            //modelBuilder.Entity<Login>(entity =>
-            //{
-            //    entity.ToTable("Login");
-
-            //    entity.Property(e => e.Id).HasColumnName("id");
-
-            //    entity.Property(e => e.Password)
-            //        .IsRequired()
-            //        .HasMaxLength(50)
-            //        .IsUnicode(false)
-            //        .HasColumnName("password");
-
-            //    entity.Property(e => e.Username)
-            //        .IsRequired()
-            //        .HasMaxLength(50)
-            //        .IsUnicode(false)
-            //        .HasColumnName("username");
-            //});
-
-            //OnModelCreatingPartial(modelBuilder);
-
-            //modelBuilder.Types().Configure(t => t.MapToStoredProcedures());
-            //context.Database.ExecuteSqlCommand("EXECUTE doStuff");
+            
             modelBuilder.Entity<LoginByUsernamePassword>().MapToStoredProcedures();
+            modelBuilder.Entity<ToDoTask>().ToTable("t_ToDoList");
         }
 
        
@@ -128,6 +107,58 @@ namespace Project.Models.DB
             // Info.  
             return lst;
         }
+
+
+
+        public async Task<List<ToDoTask>> saveInDb(ToDoTask toDoTask)
+        {
+            // Initialization db connection. 
+            var yourConnectionString = @"Server=DESKTOP-FO7B6CB\SQLEXPRESS;Database=db_corelogin;Trusted_Connection=True;user id=appuser;password=34g65c;";
+
+            List<ToDoTask> lst = new List<ToDoTask>();
+
+            try
+            {
+                DataTable dt = new DataTable();
+
+                // Settings.
+                SqlParameter IdTask = new SqlParameter("@IdTask", toDoTask.IdTask);
+                SqlParameter toDo = new SqlParameter("@TaskDescription", toDoTask.TaskDescription ?? " without value");
+                SqlParameter date = new SqlParameter("@InsertDate", toDoTask.InsertDate);
+                SqlParameter Finished = new SqlParameter("@Finished", toDoTask.Finished);
+                SqlParameter InProgress = new SqlParameter("@InProgress", toDoTask.InProgress);
+
+                // Processing.  
+                string sqlQuery = @"INSERT INTO t_ToDoList(IdTask,TaskDescription,Finished, InProgress, InsertDate) VALUES" + (IdTask , toDo, Finished, InProgress, date); 
+                using (var conn = new SqlConnection(yourConnectionString))
+
+
+
+                using (var command = new SqlCommand(sqlQuery, conn) { CommandType = CommandType.StoredProcedure })
+                {
+                    conn.Open();
+                    command.CommandType = CommandType.Text;
+                    command.CommandTimeout = 5000;
+                    command.Parameters.AddWithValue("@IdTask", IdTask.SqlValue);
+                    command.Parameters.AddWithValue("@TaskDescription", toDo.SqlValue);
+                    command.Parameters.AddWithValue("@Finished", Finished.Value);
+                    command.Parameters.AddWithValue("@InProgress", InProgress.Value);
+                    command.Parameters.AddWithValue("@InsertDate", date.SqlValue);
+                    command.ExecuteNonQuery();               
+
+                    conn.Close();
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+                Console.WriteLine(ex.Message);
+            }
+
+            // Info.  
+            return lst;
+        }
+
 
         #endregion
 

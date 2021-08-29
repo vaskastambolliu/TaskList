@@ -6,13 +6,38 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Project.Models;
+using Project.Models.DB;
 
-namespace Project.Pages.Shared
+namespace Project.Pages
 {
     public class AfterLogInModel : PageModel
     {
 
+        #region  Properties
+        /// <summary>  
+        private readonly db_coreloginContext databaseManager;
 
+
+        db_coreloginContext _Context;
+        public AfterLogInModel(db_coreloginContext databaseManagerContext)
+        {
+            try
+            {
+                // Settings.  
+                this.databaseManager = databaseManagerContext;
+            }
+            catch (Exception ex)
+            {
+                // Info  
+                Console.Write(ex);
+            }
+        }
+
+        [BindProperty]
+        public ToDoTask TodoTask { get; set; }
+
+        #endregion
 
         #region On Get method.  
 
@@ -23,6 +48,8 @@ namespace Project.Pages.Shared
         {
             try
             {
+                TodoTask = new ToDoTask();
+                TodoTask.InsertDate = DateTime.Now;
             }
             catch (Exception ex)
             {
@@ -47,6 +74,34 @@ namespace Project.Pages.Shared
 
                 // Sign Out.  
                 await authenticationManager.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+            }
+            catch (Exception ex)
+            {
+                // Info  
+                throw ex;
+            }
+
+            // Info.  
+            return this.RedirectToPage("/Index");
+        }
+
+
+        public async Task<IActionResult> OnPostSave(int? id)
+        {
+            try
+            {
+           // Setting.  
+                var authenticationManager = Request.HttpContext;
+
+                var task =  new ToDoTask();
+                if (!ModelState.IsValid)
+                {
+                    return Page(); // return page
+                }
+                this.TodoTask.InsertDate = DateTime.Now;
+                var loginInfo = await this.databaseManager.saveInDb(this.TodoTask);
+
+                return RedirectToPage("AfterLogIn");
             }
             catch (Exception ex)
             {

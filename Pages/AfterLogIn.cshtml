@@ -1,25 +1,62 @@
-﻿@page
-@model Project.Pages.Shared.AfterLogInModel
+﻿@page "{handler?}"
+@model AfterLogInModel
 @{
-    ViewBag.Title = "After Log in";
+    ViewBag.Title = "Add Task";
     Layout = "_Layout";
 }
 
-<h2>@ViewBag.Title.</h2>
+<script src="~/lib/jquery/dist/jquery.js"></script>
+<script src="~/lib/jquery-validation/dist/jquery.validate.js"></script>
+<script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.js"></script>
 
-<div class="jumbotron">
-    <h1>Welcome</h1>
-    <p class="lead">Login from "@Model.User" Account.</p>
-</div>
-
-<div class="row">
-    <div class="col-md-8">
-        <form method="post" role="form" class="form-horizontal">
-            <div class="form-group">
-                <div class="col-md-offset-2 col-md-10">
-                    <button asp-page-handler="LogOff" class="btn btn-default">Log Off</button>
-                </div>
+@*//85290539*@
+@*<div class="row">*@
+<section>
+    <form method="post" role="form" class="form-horizontal">
+        @Html.AntiForgeryToken()
+        @*<input asp-for="TodoTask.IdTask" type="hidden" />*@
+        <h2>@ViewBag.Title.</h2>
+        <div class="form-group">
+            @Html.LabelFor(m => m.TodoTask.IdTask, new { @class = "col-md-1 control-label" })
+            <div class="col-md-5">
+                @Html.TextBoxFor(m => m.TodoTask.IdTask, new { @class = "form-control" })
+                @Html.ValidationMessageFor(m => m.TodoTask.IdTask, "", new { @class = "text-danger" })
             </div>
-        </form>
-    </div>
-</div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(m => m.TodoTask.InsertDate, new { @class = "col-md-2 control-label" })
+            <div class="col-md-5">
+                @Html.TextBoxFor(m => m.TodoTask.InsertDate, new { @class = "form-control" })
+                @Html.ValidationMessageFor(m => m.TodoTask.InsertDate, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(m => m.TodoTask.TaskDescription, new { @class = "col-md-2 control-label" })
+            <div class="col-md-10">
+                @Html.TextAreaFor(m => m.TodoTask.TaskDescription, new { @class = "form-control" })
+                @Html.ValidationMessageFor(m => m.TodoTask.TaskDescription, "", new { @class = "text-danger" })
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(m => m.TodoTask.InProgress, new { @class = "col-md-2 control-label" })
+            <div class="col-md-10">
+                @Html.CheckBoxFor(m => m.TodoTask.InProgress, new { @class = "i-check" })
+            </div>
+            @Html.LabelFor(m => m.TodoTask.Finished, new { @class = "col-md-2 control-label" })
+            <div class="col-md-10">
+                @Html.CheckBoxFor(m => m.TodoTask.Finished, new { @class = "i-check"})
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md col-sm-10">
+                <input type="submit" value="Save" class="btn btn-primary" asp-page-handler="Save" />
+                <button asp-page-handler="LogOff" class="btn btn-danger offset-9">Log Off</button>
+            </div>
+        </div>
+
+    </form>
+</section>
+@*</div>*@
