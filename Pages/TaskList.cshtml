@@ -1,0 +1,76 @@
+﻿@page  "{handler?}"
+@model Project.Pages.TaskListModel
+@{
+    ViewBag.Title = "List of Tasks";
+    Layout = "_Layout";
+}
+
+<div class="row">
+    <div class="col-md-8">
+        <section>
+            <form method="post" role="form" class="form-horizontal">
+                @Html.AntiForgeryToken()
+                <p>
+                    <div class="form-group">
+                        <div class="col-md-offset-2 col-md-10">
+                            <button asp-page-handler="NewTask" class="btn btn-primary">Create New Task</button>
+                        </div>
+                    </div>
+                </p>
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th width="80 px;">
+                                @Html.DisplayName("IdTask")
+                            </th>
+                            <th width="120 px;">
+                                @Html.DisplayName("TaskDescription")
+                            </th>
+                            <th width="80 px;">
+                                @Html.DisplayName("InProgress")
+                            </th>
+                            <th width="80 px;">
+                                @Html.DisplayName("Finished")
+                            </th>
+                            <th width="80 px;">
+                                @Html.DisplayName("InsertDate")
+                            </th>
+                            @*<th>Edit | Delete</th>*@
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (Model.ToDoList!=null)
+                        {
+
+                   
+                            @foreach (var item in Model.ToDoList)
+                            {
+                                <tr>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.IdTask)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.TaskDescription)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.InProgress)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.Finished)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.InsertDate)
+                                    </td>
+                                    @*<td>
+                                            <a asp-page="./EditCustomer" asp-route-id="@item.IdTask">Edit</a> |
+                                            <a asp-page="./AllCustomer" onclick="return confirm('Are you sure you want to delete this item?');" asp-page-handler="Delete" asp-route-id="@item.IdTask">Delete</a>
+                                        </td>*@
+                                </tr>
+                            }
+                        }
+                    </tbody>
+                </table>
+            </form>
+        </section>
+    </div>
+</div>

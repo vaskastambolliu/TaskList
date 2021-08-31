@@ -160,6 +160,69 @@ namespace Project.Models.DB
         }
 
 
+        public async Task<List<ToDoTask>> ListFromDb()
+        {
+            // Initialization db connection. 
+            var yourConnectionString = @"Server=DESKTOP-FO7B6CB\SQLEXPRESS;Database=db_corelogin;Trusted_Connection=True;user id=appuser;password=34g65c;";
+
+            List<ToDoTask> lst = new List<ToDoTask>();
+
+            try
+            {
+                DataTable dt = new DataTable();
+
+                // Processing.  
+                string sqlQuery = @"select * from t_ToDoList";
+                using (var conn = new SqlConnection(yourConnectionString))
+
+
+
+                using (var command = new SqlCommand(sqlQuery, conn) { CommandType = CommandType.Text })
+                {
+                    conn.Open();
+                    command.CommandType = CommandType.Text;
+                    command.CommandTimeout = 5000;                  
+                    command.ExecuteNonQuery();
+
+                    SqlDataAdapter da = new SqlDataAdapter(command);
+                    da.Fill(dt);
+
+                    if (dt.Rows.Count > 0)
+                    {
+                        foreach (DataRow dr in dt.Rows)
+                        {
+                            ToDoTask obj = new ToDoTask();
+
+                            obj.IdTask = Convert.ToInt32(dr["IdTask"]);
+                            obj.TaskDescription = dr["TaskDescription"].ToString();
+                            obj.Finished = Convert.ToBoolean(dr["Finished"]);
+                            obj.InProgress = Convert.ToBoolean(dr["InProgress"]);
+                            obj.InsertDate = Convert.ToDateTime(dr["InsertDate"]);
+
+                            lst.Add(obj);
+                        }
+                    }
+
+                    else
+                    {
+                        throw new Exception("Wrong name or password");
+                        //Console.WriteLine("Not good connection with DB");
+                    }
+
+                    conn.Close();
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+                Console.WriteLine(ex.Message);
+            }
+
+            // Info.  
+            return lst;
+        }
+
+
         #endregion
 
     }

@@ -118,7 +118,8 @@ namespace Project.Pages
 
                         // Info.  
                         //return this.RedirectToPage("/Home/Index");
-                        return new RedirectToPageResult("/AfterLogIn");
+                        //return new RedirectToPageResult("/AfterLogIn");
+                        return new RedirectToPageResult("/TaskList");
                     }
                     else
                     {

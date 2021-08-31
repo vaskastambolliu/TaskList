@@ -101,7 +101,7 @@ namespace Project.Pages
                 this.TodoTask.InsertDate = DateTime.Now;
                 var loginInfo = await this.databaseManager.saveInDb(this.TodoTask);
 
-                return RedirectToPage("AfterLogIn");
+                return RedirectToPage("TaskList");
             }
             catch (Exception ex)
             {
