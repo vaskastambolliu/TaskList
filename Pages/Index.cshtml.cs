@@ -73,11 +73,11 @@ namespace Project.Pages
             try
             {
                 // Verification.  
-                if (this.User.Identity.IsAuthenticated)
-                {
+                //if (this.User.Identity.IsAuthenticated)
+                //{
                     // Home Page.  
-                    return this.RedirectToPage("/Home/Index");
-                }
+                    return this.RedirectToPage("/TaskList");
+                //}
             }
             catch (Exception ex)
             {
