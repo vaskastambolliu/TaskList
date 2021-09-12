@@ -1,4 +1,4 @@
-# Project
+# TaskList
 Card Project
 - Install SqlServer https://download.microsoft.com/download/7/f/8/7f8a9c43-8c8a-4f7c-9f92-83c18d96b681/SQL2019-SSEI-Expr.exe
 - Script to Create DB :  CREATE DATABASE db_corelogin;
