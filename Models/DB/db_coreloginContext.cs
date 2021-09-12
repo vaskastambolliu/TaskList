@@ -22,12 +22,16 @@ namespace Project.Models.DB
         {
         }
 
+        #region Properties
+        
+	
         public virtual System.Data.Entity.DbSet<Login> Login { get; set; }
         //public virtual System.Data.Entity.DbSet<ToDoTask> ToDoTask { get; set; }
         public System.Data.Entity.DbSet<ToDoTask> ToDoTask { get; set; }
+        public string ConnectinString { get; set; }
 
-
-        protected  void OnModelCreating(DbModelBuilder modelBuilder)
+        #endregion
+        protected void OnModelCreating(DbModelBuilder modelBuilder)
         {
             
             modelBuilder.Entity<LoginByUsernamePassword>().MapToStoredProcedures();
@@ -35,7 +39,7 @@ namespace Project.Models.DB
         }
 
        
-        #region Login by username and password store procedure method.  
+        #region  Methods  
 
         /// <summary>  
         /// Login by username and password store procedure method.  
@@ -46,7 +50,7 @@ namespace Project.Models.DB
         public async Task<List<LoginByUsernamePassword>> LoginByUsernamePasswordMethodAsync(string usernameVal, string passwordVal)
         {
             // Initialization db connection. 
-            var yourConnectionString = @"Server=DESKTOP-FO7B6CB\SQLEXPRESS;Database=db_corelogin;Trusted_Connection=True;user id=appuser;password=34g65c;";
+            ConnectinString = @"Server=DESKTOP-FO7B6CB\SQLEXPRESS;Database=db_corelogin;Trusted_Connection=True;user id=appuser;password=34g65c;";
 
             List<LoginByUsernamePassword> lst = new List<LoginByUsernamePassword>();
 
@@ -60,7 +64,7 @@ namespace Project.Models.DB
                 // Processing.  
                 string sqlQuery = "EXEC [dbo].[LoginByUsernamePassword]" +
                                     "@username, @password";
-                using (var conn = new SqlConnection(yourConnectionString))
+                using (var conn = new SqlConnection(ConnectinString))
 
                 
 
@@ -113,7 +117,7 @@ namespace Project.Models.DB
         public async Task<List<ToDoTask>> saveInDb(ToDoTask toDoTask)
         {
             // Initialization db connection. 
-            var yourConnectionString = @"Server=DESKTOP-FO7B6CB\SQLEXPRESS;Database=db_corelogin;Trusted_Connection=True;user id=appuser;password=34g65c;";
+            ConnectinString = @"Server=DESKTOP-FO7B6CB\SQLEXPRESS;Database=db_corelogin;Trusted_Connection=True;user id=appuser;password=34g65c;";
 
             List<ToDoTask> lst = new List<ToDoTask>();
 
@@ -122,15 +126,15 @@ namespace Project.Models.DB
                 DataTable dt = new DataTable();
 
                 // Settings.
-                SqlParameter IdTask = new SqlParameter("@IdTask", toDoTask.IdTask);
+                //SqlParameter IdTask = new SqlParameter("@IdTask", toDoTask.IdTask);
                 SqlParameter toDo = new SqlParameter("@TaskDescription", toDoTask.TaskDescription ?? " without value");
                 SqlParameter date = new SqlParameter("@InsertDate", toDoTask.InsertDate);
                 SqlParameter Finished = new SqlParameter("@Finished", toDoTask.Finished);
                 SqlParameter InProgress = new SqlParameter("@InProgress", toDoTask.InProgress);
 
                 // Processing.  
-                string sqlQuery = @"INSERT INTO t_ToDoList(IdTask,TaskDescription,Finished, InProgress, InsertDate) VALUES" + (IdTask , toDo, Finished, InProgress, date); 
-                using (var conn = new SqlConnection(yourConnectionString))
+                string sqlQuery = @"INSERT INTO t_ToDoList(TaskDescription,Finished, InProgress, InsertDate) VALUES" + (toDo, Finished, InProgress, date); 
+                using (var conn = new SqlConnection(ConnectinString))
 
 
 
@@ -139,7 +143,7 @@ namespace Project.Models.DB
                     conn.Open();
                     command.CommandType = CommandType.Text;
                     command.CommandTimeout = 5000;
-                    command.Parameters.AddWithValue("@IdTask", IdTask.SqlValue);
+                    //command.Parameters.AddWithValue("@IdTask", IdTask.SqlValue);
                     command.Parameters.AddWithValue("@TaskDescription", toDo.SqlValue);
                     command.Parameters.AddWithValue("@Finished", Finished.Value);
                     command.Parameters.AddWithValue("@InProgress", InProgress.Value);
@@ -163,7 +167,7 @@ namespace Project.Models.DB
         public async Task<List<ToDoTask>> ListFromDb()
         {
             // Initialization db connection. 
-            var yourConnectionString = @"Server=DESKTOP-FO7B6CB\SQLEXPRESS;Database=db_corelogin;Trusted_Connection=True;user id=appuser;password=34g65c;";
+            ConnectinString = @"Server=DESKTOP-FO7B6CB\SQLEXPRESS;Database=db_corelogin;Trusted_Connection=True;user id=appuser;password=34g65c;";
 
             List<ToDoTask> lst = new List<ToDoTask>();
 
@@ -173,7 +177,7 @@ namespace Project.Models.DB
 
                 // Processing.  
                 string sqlQuery = @"select * from t_ToDoList";
-                using (var conn = new SqlConnection(yourConnectionString))
+                using (var conn = new SqlConnection(ConnectinString))
 
 
 
@@ -203,11 +207,11 @@ namespace Project.Models.DB
                         }
                     }
 
-                    else
-                    {
-                        throw new Exception("Wrong name or password");
-                        //Console.WriteLine("Not good connection with DB");
-                    }
+                    //else
+                    //{
+                    //    throw new Exception("Wrong name or password");
+                    //    //Console.WriteLine("Not good connection with DB");
+                    //}
 
                     conn.Close();
                 }

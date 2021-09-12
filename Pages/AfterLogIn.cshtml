@@ -17,9 +17,9 @@
         @*<input asp-for="TodoTask.IdTask" type="hidden" />*@
         <h2>@ViewBag.Title.</h2>
         <div class="form-group">
-            @Html.LabelFor(m => m.TodoTask.IdTask, new { @class = "col-md-1 control-label" })
+            @Html.LabelFor(m => m.TodoTask.IdTask, new {  @class = "col-md-1 control-label" })
             <div class="col-md-5">
-                @Html.TextBoxFor(m => m.TodoTask.IdTask, new { @class = "form-control" })
+                @Html.TextBoxFor(m => m.TodoTask.IdTask, new { @readonly = "readonly", @class = "form-control" } )
                 @Html.ValidationMessageFor(m => m.TodoTask.IdTask, "", new { @class = "text-danger" })
             </div>
         </div>
