@@ -10,27 +10,30 @@ using System.Data;
 
 namespace Project.Models.DB
 {
-    public partial class db_coreloginContext : Microsoft.EntityFrameworkCore.DbContext
+    public partial class db_corelogin : Microsoft.EntityFrameworkCore.DbContext
     {
 
-        public db_coreloginContext()
-        {
-        }
-
-        public db_coreloginContext(DbContextOptions<db_coreloginContext> options)
-            : base(options)
-        {
-        }
-
         #region Properties
-        
-	
+
         public virtual System.Data.Entity.DbSet<Login> Login { get; set; }
         //public virtual System.Data.Entity.DbSet<ToDoTask> ToDoTask { get; set; }
         public System.Data.Entity.DbSet<ToDoTask> ToDoTask { get; set; }
-        public string ConnectinString { get; set; }
+        public string ConnectionString { get; set; }
 
         #endregion
+
+        //public db_coreloginContext()
+        //{
+        //    Console.WriteLine("aaaaaaa");
+        //}
+
+        public db_corelogin(DbContextOptions<db_corelogin> options)
+            : base(options)
+        {
+            ConnectionString = @"Server=DESKTOP-FO7B6CB\SQLEXPRESS;Database=db_corelogin;Trusted_Connection=True;user id=appuser;password=34g65c;";
+        }
+
+    
         protected void OnModelCreating(DbModelBuilder modelBuilder)
         {
             
@@ -50,7 +53,7 @@ namespace Project.Models.DB
         public async Task<List<LoginByUsernamePassword>> LoginByUsernamePasswordMethodAsync(string usernameVal, string passwordVal)
         {
             // Initialization db connection. 
-            ConnectinString = @"Server=DESKTOP-FO7B6CB\SQLEXPRESS;Database=db_corelogin;Trusted_Connection=True;user id=appuser;password=34g65c;";
+            //ConnectionString = @"Server=DESKTOP-FO7B6CB\SQLEXPRESS;Database=db_corelogin;Trusted_Connection=True;user id=appuser;password=34g65c;";
 
             List<LoginByUsernamePassword> lst = new List<LoginByUsernamePassword>();
 
@@ -64,7 +67,7 @@ namespace Project.Models.DB
                 // Processing.  
                 string sqlQuery = "EXEC [dbo].[LoginByUsernamePassword]" +
                                     "@username, @password";
-                using (var conn = new SqlConnection(ConnectinString))
+                using (var conn = new SqlConnection(ConnectionString))
 
                 
 
@@ -117,7 +120,7 @@ namespace Project.Models.DB
         public async Task<List<ToDoTask>> saveInDb(ToDoTask toDoTask)
         {
             // Initialization db connection. 
-            ConnectinString = @"Server=DESKTOP-FO7B6CB\SQLEXPRESS;Database=db_corelogin;Trusted_Connection=True;user id=appuser;password=34g65c;";
+            //ConnectionString = @"Server=DESKTOP-FO7B6CB\SQLEXPRESS;Database=db_corelogin;Trusted_Connection=True;user id=appuser;password=34g65c;";
 
             List<ToDoTask> lst = new List<ToDoTask>();
 
@@ -134,7 +137,7 @@ namespace Project.Models.DB
 
                 // Processing.  
                 string sqlQuery = @"INSERT INTO t_ToDoList(TaskDescription,Finished, InProgress, InsertDate) VALUES" + (toDo, Finished, InProgress, date); 
-                using (var conn = new SqlConnection(ConnectinString))
+                using (var conn = new SqlConnection(ConnectionString))
 
 
 
@@ -164,10 +167,18 @@ namespace Project.Models.DB
         }
 
 
+        public void DeleteRow(int id)
+        {
+            //ConnectionString = @"Server=DESKTOP-FO7B6CB\SQLEXPRESS;Database=db_corelogin;Trusted_Connection=True;user id=appuser;password=34g65c;";
+            
+            string query = @"delete  from t_ToDoList WHERE IdTask = " + id;
+        }
+
+
         public async Task<List<ToDoTask>> ListFromDb()
         {
             // Initialization db connection. 
-            ConnectinString = @"Server=DESKTOP-FO7B6CB\SQLEXPRESS;Database=db_corelogin;Trusted_Connection=True;user id=appuser;password=34g65c;";
+            //ConnectionString = @"Server=DESKTOP-FO7B6CB\SQLEXPRESS;Database=db_corelogin;Trusted_Connection=True;user id=appuser;password=34g65c;";
 
             List<ToDoTask> lst = new List<ToDoTask>();
 
@@ -177,7 +188,7 @@ namespace Project.Models.DB
 
                 // Processing.  
                 string sqlQuery = @"select * from t_ToDoList";
-                using (var conn = new SqlConnection(ConnectinString))
+                using (var conn = new SqlConnection(ConnectionString))
 
 
 

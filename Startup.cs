@@ -52,7 +52,7 @@ namespace Project
             });
 
             //  Register SQL database configuration context as services.    
-           services.AddDbContext<db_coreloginContext>(options => options.UseSqlServer(Configuration.GetConnectionString("db_corelogin")));
+           services.AddDbContext<db_corelogin>(options => options.UseSqlServer(Configuration.GetConnectionString("db_corelogin")));
 
             
         }

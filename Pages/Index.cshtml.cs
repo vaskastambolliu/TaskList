@@ -26,7 +26,7 @@ namespace Project.Pages
         /// <summary>  
         /// Database Manager property.  
         /// </summary>  
-        private readonly db_coreloginContext databaseManager;
+        private readonly db_corelogin databaseManager;
 
         #endregion
 
@@ -36,7 +36,7 @@ namespace Project.Pages
         /// Initializes a new instance of the <see cref="IndexModel"/> class.  
         /// </summary>  
         /// <param name="databaseManagerContext">Database manager context parameter</param>  
-        public IndexModel(db_coreloginContext databaseManagerContext)
+        public IndexModel(db_corelogin databaseManagerContext)
         {
             try
             {

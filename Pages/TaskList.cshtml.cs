@@ -12,8 +12,8 @@ namespace Project.Pages
     public class TaskListModel : PageModel
     {
 
-        private readonly db_coreloginContext databaseManager;
-        public TaskListModel(db_coreloginContext databaseManagerContext)
+        private readonly db_corelogin databaseManager;
+        public TaskListModel(db_corelogin databaseManagerContext)
         {
             try
             {
@@ -34,6 +34,13 @@ namespace Project.Pages
             ToDoList = await this.databaseManager.ListFromDb();
 
             
+        }
+
+        public async Task OnGetDelete()
+        {
+            ToDoList = await this.databaseManager.ListFromDb();
+
+
         }
 
         public async Task<IActionResult> OnPostNewTask()

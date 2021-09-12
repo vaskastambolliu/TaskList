@@ -16,11 +16,11 @@ namespace Project.Pages
 
         #region  Properties
         /// <summary>  
-        private readonly db_coreloginContext databaseManager;
+        private readonly db_corelogin databaseManager;
 
 
-        db_coreloginContext _Context;
-        public AfterLogInModel(db_coreloginContext databaseManagerContext)
+        db_corelogin _Context;
+        public AfterLogInModel(db_corelogin databaseManagerContext)
         {
             try
             {
