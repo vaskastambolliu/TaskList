@@ -31,17 +31,27 @@ namespace Project.Pages
       
         public async Task OnGetAsync()
         {
-            ToDoList = await this.databaseManager.ListFromDb();
+            ToDoList = this.databaseManager.ListFromDb();
 
             
         }
 
-        public async Task OnGetDelete()
+        public async Task OnGetDelete(int id)
         {
-            ToDoList = await this.databaseManager.ListFromDb();
+            ToDoList = await this.databaseManager.DeleteRow(id);
+            //ToDoList = this.databaseManager.ListFromDb();
 
 
         }
+
+        public async Task OnGetEdit(int id)
+        {
+            ////ToDoList = await this.databaseManager.UpdateRow(todotask);
+            //ToDoList = this.databaseManager.ListFromDb();
+
+
+        }
+
 
         public async Task<IActionResult> OnPostNewTask()
         {

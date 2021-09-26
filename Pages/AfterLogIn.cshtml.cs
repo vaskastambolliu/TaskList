@@ -48,8 +48,19 @@ namespace Project.Pages
         {
             try
             {
-                TodoTask = new ToDoTask();
-                TodoTask.InsertDate = DateTime.Now;
+                if (!String.IsNullOrEmpty(Convert.ToString(HttpContext.Request.QueryString)))
+                {               
+                string idtask = Convert.ToString(HttpContext.Request.QueryString);
+                string id = idtask.Split("=")[1];
+                    //TodoTask = new ToDoTask(int.Parse(id));
+                    TodoTask = this.databaseManager.SelectFromDb(int.Parse(id));
+                }
+                else
+                {
+                    TodoTask = new ToDoTask();
+                    TodoTask.InsertDate = DateTime.Now;
+                }
+               
             }
             catch (Exception ex)
             {
@@ -94,12 +105,21 @@ namespace Project.Pages
                 var authenticationManager = Request.HttpContext;
 
                 var task =  new ToDoTask();
+                this.TodoTask.InsertDate = DateTime.Now;
                 if (!ModelState.IsValid)
                 {
                     return Page(); // return page
                 }
-                this.TodoTask.InsertDate = DateTime.Now;
-                var loginInfo = await this.databaseManager.saveInDb(this.TodoTask);
+                if (id == null)
+                {
+                    
+                    var loginInfo = await this.databaseManager.saveInDb(this.TodoTask);
+                }
+                else
+                {
+                    var loginInfo = await this.databaseManager.UpdateRow(this.TodoTask);
+                }
+   
 
                 return RedirectToPage("TaskList");
             }

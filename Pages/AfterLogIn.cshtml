@@ -52,7 +52,7 @@
 
         <div class="form-group">
             <div class="col-md col-sm-10">
-                <input type="submit" value="Save" class="btn btn-primary" asp-page-handler="Save" />
+                <input type="submit" value="Save" class="btn btn-primary" asp-page-handler="Save" asp-route-id="@Model.TodoTask.IdTask" />
                 <button asp-page-handler="LogOff" class="btn btn-danger offset-9">Log Off</button>
             </div>
         </div>

@@ -167,15 +167,106 @@ namespace Project.Models.DB
         }
 
 
-        public void DeleteRow(int id)
+        public async Task<List<ToDoTask>> DeleteRow(int id)
         {
             //ConnectionString = @"Server=DESKTOP-FO7B6CB\SQLEXPRESS;Database=db_corelogin;Trusted_Connection=True;user id=appuser;password=34g65c;";
             
             string query = @"delete  from t_ToDoList WHERE IdTask = " + id;
+
+            List<ToDoTask> lst = new List<ToDoTask>();
+
+            try
+            {
+                DataTable dt = new DataTable();
+
+                // Settings.
+                //SqlParameter IdTask = new SqlParameter("@IdTask", toDoTask.IdTask);
+                SqlParameter date = new SqlParameter("@IdTask", id);
+      
+                // Processing.  
+                string sqlQuery = @"delete from t_ToDoList WHERE IdTask = " + id;;
+                using (var conn = new SqlConnection(ConnectionString))
+
+
+
+                using (var command = new SqlCommand(sqlQuery, conn) { CommandType = CommandType.StoredProcedure })
+                {
+                    conn.Open();
+                    command.CommandType = CommandType.Text;
+                    command.CommandTimeout = 5000;
+                    //command.Parameters.AddWithValue("@IdTask", IdTask.SqlValue);
+                    //command.Parameters.AddWithValue("IdTask", toDo.SqlValue);
+                    
+                    command.ExecuteNonQuery();
+
+                    conn.Close();
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+                Console.WriteLine(ex.Message);
+            }
+
+            // Info.
+            lst= (List<ToDoTask>) ListFromDb();
+            return lst;
         }
 
+        public async Task<List<ToDoTask>> UpdateRow(ToDoTask toDoTask)
+        {
+           
+            List<ToDoTask> lst = new List<ToDoTask>();
 
-        public async Task<List<ToDoTask>> ListFromDb()
+            try
+            {
+                DataTable dt = new DataTable();
+
+                // Settings.
+                SqlParameter IdTask = new SqlParameter("@IdTask", toDoTask.IdTask);
+                SqlParameter TaskDescription = new SqlParameter("@TaskDescription", toDoTask.TaskDescription ?? " without value");
+                SqlParameter InsertDate = new SqlParameter("@InsertDate", toDoTask.InsertDate);
+                SqlParameter Finished = new SqlParameter("@Finished", toDoTask.Finished);
+                SqlParameter InProgress = new SqlParameter("@InProgress", toDoTask.InProgress);
+
+                // Processing.  
+                //string sqlQuery = @"UPDATE t_ToDoList SET  TaskDescription = '" + @TaskDescription + "' ,Finished= " + "" + @Finished + ",InProgress =" + @InProgress + ",@InsertDate = " + @date +
+                //            " WHERE @IdTask = " + @id;
+
+                string sqlQuery = @"UPDATE t_ToDoList SET  TaskDescription = @TaskDescription  ,Finished= @Finished ,InProgress =  @InProgress ,InsertDate = @InsertDate
+                            WHERE @IdTask =  @IdTask";
+                using (var conn = new SqlConnection(ConnectionString))
+
+
+
+                using (var command = new SqlCommand(sqlQuery, conn) { CommandType = CommandType.StoredProcedure })
+                {
+                    conn.Open();
+                    command.CommandType = CommandType.Text;
+                    command.CommandTimeout = 5000;
+                    command.Parameters.AddWithValue("@IdTask", IdTask.SqlValue);
+                    command.Parameters.AddWithValue("@TaskDescription", TaskDescription.SqlValue);
+                    command.Parameters.AddWithValue("@Finished", Finished.Value);
+                    command.Parameters.AddWithValue("@InProgress", InProgress.Value);
+                    command.Parameters.AddWithValue("@InsertDate", InsertDate.SqlValue);
+
+                    command.ExecuteNonQuery();
+
+                    conn.Close();
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+                Console.WriteLine(ex.Message);
+            }
+
+            // Info.
+            //lst = (List<ToDoTask>)ListFromDb();
+            return lst;
+        }
+
+        public List<ToDoTask> ListFromDb()
         {
             // Initialization db connection. 
             //ConnectionString = @"Server=DESKTOP-FO7B6CB\SQLEXPRESS;Database=db_corelogin;Trusted_Connection=True;user id=appuser;password=34g65c;";
@@ -196,7 +287,7 @@ namespace Project.Models.DB
                 {
                     conn.Open();
                     command.CommandType = CommandType.Text;
-                    command.CommandTimeout = 5000;                  
+                    command.CommandTimeout = 5000;
                     command.ExecuteNonQuery();
 
                     SqlDataAdapter da = new SqlDataAdapter(command);
@@ -237,6 +328,59 @@ namespace Project.Models.DB
             return lst;
         }
 
+        public ToDoTask SelectFromDb( int id)
+        {
+            // Initialization db connection. 
+            //ConnectionString = @"Server=DESKTOP-FO7B6CB\SQLEXPRESS;Database=db_corelogin;Trusted_Connection=True;user id=appuser;password=34g65c;";
+
+            ToDoTask obj = new ToDoTask();
+
+            try
+            {
+                DataTable dt = new DataTable();
+
+                // Processing.  
+                string sqlQuery = @"select * from t_ToDoList where IdTask =" + id;
+                using (var conn = new SqlConnection(ConnectionString))
+
+
+
+                using (var command = new SqlCommand(sqlQuery, conn) { CommandType = CommandType.Text })
+                {
+                    conn.Open();
+                    command.CommandType = CommandType.Text;
+                    command.CommandTimeout = 5000;
+                    command.ExecuteNonQuery();
+
+                    SqlDataAdapter da = new SqlDataAdapter(command);
+                    da.Fill(dt);
+
+                    if (dt.Rows.Count > 0)
+                    {
+                        foreach (DataRow dr in dt.Rows)
+                        {
+  
+                            obj.IdTask = Convert.ToInt32(dr["IdTask"]);
+                            obj.TaskDescription = dr["TaskDescription"].ToString();
+                            obj.Finished = Convert.ToBoolean(dr["Finished"]);
+                            obj.InProgress = Convert.ToBoolean(dr["InProgress"]);
+                            obj.InsertDate = Convert.ToDateTime(dr["InsertDate"]);
+
+                        }
+                    }
+
+                    conn.Close();
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+                Console.WriteLine(ex.Message);
+            }
+
+            // Info.  
+            return obj;
+        }
 
         #endregion
 
